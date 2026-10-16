@@ -1,6 +1,7 @@
 import {
   ILLER, MAHKEME_TURLERI, adliyeListesi, KABUL_PENCERESI_GUN, AZAMI_GECIKME_DK, bugunTR, gunEkle,
 } from "./veri.js";
+import { API_TABANI } from "./ayar.js";
 
 const $ = (id) => document.getElementById(id);
 const DIGER = "__diger__";
@@ -65,9 +66,22 @@ function mesajGoster(metin, tur) {
 let turnstileToken = "";
 let turnstileWidget = null;
 
+// API'ye ulaşılamazsa (ör. GitHub Pages'te API henüz bağlanmamışsa) form kapatılır.
+function apiKapali() {
+  $("gonder").disabled = true;
+  mesajGoster("Bildirim sistemi henüz devreye alınmadı. Çok yakında buradan bildirim yapabileceksiniz.", "hata");
+}
+
 async function turnstileKur() {
+  let ayar;
   try {
-    const ayar = await (await fetch("/api/ayarlar")).json();
+    const yanit = await fetch(`${API_TABANI}/api/ayarlar`);
+    if (!yanit.ok) throw new Error();
+    ayar = await yanit.json();
+  } catch {
+    return apiKapali();
+  }
+  try {
     if (!ayar.turnstile_site_key) return;
     const betik = document.createElement("script");
     betik.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit";
@@ -100,7 +114,7 @@ async function gonder(olay) {
   const dugme = $("gonder");
   dugme.disabled = true;
   try {
-    const yanit = await fetch("/api/bildirim", {
+    const yanit = await fetch(`${API_TABANI}/api/bildirim`, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -114,7 +128,7 @@ async function gonder(olay) {
         turnstile: turnstileToken,
       }),
     });
-    const veri = await yanit.json();
+    const veri = await yanit.json().catch(() => ({}));
     if (!yanit.ok) throw new Error(veri.hata || "Bildirim kaydedilemedi.");
     mesajGoster(`Teşekkürler. ${sureMetni(veri.gecikme_dk)} gecikme anonim olarak kaydedildi.`, "basari");
     $("planlanan").value = "";

@@ -109,6 +109,32 @@ Ardından Cloudflare panelinde:
 5. GitHub → Settings → Variables: `SITE_URL` (ör. `https://durusmamgecikti.com`) — aylık arşiv
    iş akışı bunu kullanır.
 
+## GitHub Pages ile yayın
+
+GitHub Pages yalnızca statik dosya sunar; veritabanı ve sunucu kodu çalıştıramaz. Bu yüzden
+**site** GitHub Pages'te, **bildirim/rapor API'si** Cloudflare'de (ücretsiz) çalışır:
+
+```
+ziyaretçi ──▶ ersancetin.github.io/durusmam-gecikti  (GitHub Pages: HTML/CSS/JS)
+                    │ fetch (CORS)
+                    ▼
+              durusmam-gecikti.pages.dev/api/*      (Cloudflare Pages Functions + D1)
+```
+
+1. Depo → **Settings → Pages → Build and deployment → Source: GitHub Actions** seçin.
+   Varsayılan dala her push'ta `.github/workflows/github-pages.yml` siteyi yayınlar.
+2. API devreye girene kadar site açılır, ancak form “henüz devreye alınmadı” uyarısı gösterir.
+3. Yukarıdaki Cloudflare kurulumunu yapın (`npm run deploy`), sonra depo →
+   **Settings → Secrets and variables → Actions → Variables** altına
+   `API_URL = https://durusmam-gecikti.pages.dev` ekleyip iş akışını yeniden çalıştırın.
+4. `wrangler.toml` içindeki `IZINLI_KOKENLER`, GitHub Pages adresini (veya kendi alan adınızı)
+   içermelidir; aksi halde tarayıcı API'ye erişemez.
+5. Kendi alan adınız için: Settings → Pages → Custom domain.
+
+Not: GitHub Pages `public/_headers` dosyasını uygulamaz (CSP vb. başlıklar yalnızca
+Cloudflare'de geçerlidir) ve GitHub ziyaretçi IP'lerini kendi kayıtlarında tutar; bu durum
+aydınlatma notunda belirtilmelidir. Uzun vadede sitenin de Cloudflare Pages'ten sunulması önerilir.
+
 ## Yerel geliştirme
 
 ```bash

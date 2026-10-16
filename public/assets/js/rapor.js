@@ -1,4 +1,5 @@
 import { bugunTR } from "./veri.js";
+import { API_TABANI } from "./ayar.js";
 
 const $ = (id) => document.getElementById(id);
 const AY_ADLARI = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
@@ -64,10 +65,17 @@ function tablo(satirlar) {
 
 async function yukle(ay) {
   $("baslik-ay").textContent = ayAdi(ay);
-  $("csv-indir").href = `/api/rapor?ay=${ay}&bicim=csv`;
+  $("csv-indir").href = `${API_TABANI}/api/rapor?ay=${ay}&bicim=csv`;
   history.replaceState(null, "", `?ay=${ay}`);
 
-  const r = await (await fetch(`/api/rapor?ay=${ay}`)).json();
+  let r;
+  try {
+    const yanit = await fetch(`${API_TABANI}/api/rapor?ay=${ay}`);
+    if (!yanit.ok) throw new Error();
+    r = await yanit.json();
+  } catch {
+    r = { asgari_bildirim: 3, genel: { n: 0 }, iller: [], turler: [], saatler: [], mahkemeler: [] };
+  }
   $("asgari").textContent = r.asgari_bildirim;
   $("k-n").textContent = r.genel.n;
   $("k-medyan").textContent = r.genel.n ? dk(r.genel.medyan) : "–";
@@ -84,7 +92,8 @@ async function baslat() {
   const buAy = bugunTR().slice(0, 7);
   let aylar = [];
   try {
-    aylar = await (await fetch("/api/aylar")).json();
+    const yanit = await fetch(`${API_TABANI}/api/aylar`);
+    if (yanit.ok) aylar = await yanit.json();
   } catch {
     // Liste alınamazsa yalnızca içinde bulunulan ay gösterilir.
   }

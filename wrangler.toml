@@ -6,6 +6,8 @@ compatibility_date = "2025-09-01"
 # Cloudflare Turnstile site anahtarı (herkese açık). Boş bırakılırsa bot doğrulaması kapalıdır.
 # Gizli anahtar: npx wrangler pages secret put TURNSTILE_SECRET
 TURNSTILE_SITE_KEY = ""
+# Site API'den farklı bir adreste yayınlanıyorsa (ör. GitHub Pages) o adres. Virgülle çoklu yazılabilir.
+IZINLI_KOKENLER = "https://ersancetin.github.io"
 
 [[d1_databases]]
 binding = "DB"

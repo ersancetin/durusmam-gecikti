@@ -17,9 +17,11 @@ permissions:
 
 jobs:
   arsivle:
+    # API adresi tanımlanmadıysa (sistem henüz devrede değilse) iş akışı atlanır.
+    if: vars.API_URL != '' || vars.SITE_URL != ''
     runs-on: ubuntu-latest
     env:
-      SITE: ${{ vars.SITE_URL || 'https://durusmamgecikti.com' }}
+      SITE: ${{ vars.API_URL || vars.SITE_URL }}
     steps:
       - uses: actions/checkout@v4
       - name: Raporu indir
