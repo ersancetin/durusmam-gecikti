@@ -1,0 +1,14 @@
+{
+  "name": "durusmam-gecikti",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "db:yerel": "wrangler d1 migrations apply durusmam-gecikti --local",
+    "db:uzak": "wrangler d1 migrations apply durusmam-gecikti --remote",
+    "dev": "wrangler pages dev",
+    "deploy": "wrangler pages deploy"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}

@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Gecikme Raporları</title>
+  <meta name="description" content="Mahkemelere göre aylık duruşma gecikme raporları.">
+  <link rel="icon" href="/favicon.png">
+  <link rel="stylesheet" href="/assets/css/stil.css">
+</head>
+<body>
+  <header class="ust">
+    <div class="kap">
+      <a class="marka" href="/">
+        <img src="/assets/logo.png" alt="Cumhuriyet Avukatları logosu" width="44" height="44">
+        <span><strong>Duruşmam <span>Gecikti</span></strong><small>Cumhuriyet Avukatları inisiyatifi</small></span>
+      </a>
+      <nav class="menu">
+        <a href="/">Bildir</a>
+        <a href="/rapor.html" aria-current="page">Raporlar</a>
+        <a href="/hakkinda.html">Yöntem &amp; Gizlilik</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="kap">
+    <section class="giris">
+      <h1>Aylık gecikme raporu: <em id="baslik-ay">…</em></h1>
+      <p>Değerler, duruşmanın davetiyedeki saati ile fiilen başladığı saat arasındaki farktır. Bir mahkeme, il veya tür yalnızca o ay en az <b id="asgari">3</b> bildirim aldıysa listelenir.</p>
+    </section>
+
+    <div class="arac-cubugu">
+      <div>
+        <label for="ay-sec">Dönem</label>
+        <select id="ay-sec"></select>
+      </div>
+      <a class="dugme ikincil" id="csv-indir" href="#">CSV indir</a>
+      <button class="dugme ikincil" type="button" id="yazdir">Yazdır / PDF</button>
+    </div>
+
+    <div class="kpi" id="kpi">
+      <div><b id="k-n">–</b><span>Toplam bildirim</span></div>
+      <div><b id="k-medyan">–</b><span>Medyan gecikme</span></div>
+      <div><b id="k-ort">–</b><span>Ortalama gecikme</span></div>
+      <div><b id="k-oran">–</b><span>30 dk ve üstü gecikme</span></div>
+    </div>
+
+    <section class="kart">
+      <h2>En çok geciken mahkemeler</h2>
+      <p class="aciklama">Medyan gecikmeye göre sıralı.</p>
+      <div class="tablo-kap">
+        <table>
+          <thead>
+            <tr>
+              <th>Mahkeme</th><th>Adliye</th>
+              <th class="sayi">Bildirim</th><th class="sayi">Medyan</th><th class="sayi">Ortalama</th><th class="sayi">En fazla</th><th class="sayi">30 dk+</th>
+            </tr>
+          </thead>
+          <tbody id="t-mahkemeler"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="kart">
+      <h2>İllere göre medyan gecikme</h2>
+      <p class="aciklama">Dakika cinsinden; parantez içinde bildirim sayısı.</p>
+      <ul class="cubuklar" id="c-iller"></ul>
+    </section>
+
+    <section class="kart">
+      <h2>Mahkeme türüne göre medyan gecikme</h2>
+      <p class="aciklama">Dakika cinsinden; parantez içinde bildirim sayısı.</p>
+      <ul class="cubuklar" id="c-turler"></ul>
+    </section>
+
+    <section class="kart">
+      <h2>Duruşma saatine göre medyan gecikme</h2>
+      <p class="aciklama">Gün içinde gecikmenin nasıl biriktiğini gösterir.</p>
+      <ul class="cubuklar" id="c-saatler"></ul>
+    </section>
+  </main>
+
+  <footer class="alt">
+    <div class="kap">
+      <span>© Cumhuriyet Avukatları — sivil toplum inisiyatifi</span>
+      <span>Bildirimler doğrulanmamış beyanlardır; raporlar eğilimi gösterir.</span>
+    </div>
+  </footer>
+
+  <script type="module" src="/assets/js/rapor.js"></script>
+</body>
+</html>

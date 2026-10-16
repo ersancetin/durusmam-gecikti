@@ -1,0 +1,39 @@
+# Her ayın 8'inde (önceki ayın 7 günlük bildirim penceresi kapandıktan sonra) önceki ayın
+# raporunu JSON + CSV olarak depoya işler. Böylece yayımlanan her dönem raporu değiştirilemez,
+# tarihli ve herkesçe denetlenebilir bir kayıt olarak saklanır.
+name: Aylık rapor arşivi
+
+on:
+  schedule:
+    - cron: "17 6 8 * *"
+  workflow_dispatch:
+    inputs:
+      ay:
+        description: "Arşivlenecek ay (YYYY-AA). Boşsa önceki ay."
+        required: false
+
+permissions:
+  contents: write
+
+jobs:
+  arsivle:
+    runs-on: ubuntu-latest
+    env:
+      SITE: ${{ vars.SITE_URL || 'https://durusmamgecikti.com' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Raporu indir
+        run: |
+          AY="${{ github.event.inputs.ay }}"
+          [ -z "$AY" ] && AY=$(date -u -d "$(date -u +%Y-%m-01) -1 month" +%Y-%m)
+          mkdir -p arsiv
+          curl -fsS "$SITE/api/rapor?ay=$AY" -o "arsiv/$AY.json"
+          curl -fsS "$SITE/api/rapor?ay=$AY&bicim=csv" -o "arsiv/$AY.csv"
+          echo "AY=$AY" >> "$GITHUB_ENV"
+      - name: Depoya işle
+        run: |
+          git config user.name "durusmam-gecikti-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add arsiv
+          git diff --cached --quiet || git commit -m "Arşiv: $AY raporu"
+          git push
